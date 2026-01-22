@@ -1,224 +1,277 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Code, Database, Server, Cloud, CheckCircle } from 'lucide-react';
+# PharmaIntel AI
 
-const BuildGuide = () => {
-  const [openSections, setOpenSections] = useState({ stack: true });
+AI-powered pharmaceutical intelligence platform with document Q&A, regulatory monitoring, and training modules.
 
-  const toggleSection = (section) => {
-    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
-  };
+## 🎯 Features
 
-  const freeStack = [
-    { name: 'Frontend', tool: 'Next.js + Vercel', cost: 'Free', icon: <Code className="w-5 h-5" /> },
-    { name: 'Backend', tool: 'Next.js API Routes', cost: 'Free', icon: <Server className="w-5 h-5" /> },
-    { name: 'Database', tool: 'Supabase (500MB)', cost: 'Free', icon: <Database className="w-5 h-5" /> },
-    { name: 'Vector DB', tool: 'pgvector (Supabase)', cost: 'Free', icon: <Database className="w-5 h-5" /> },
-    { name: 'Storage', tool: 'Supabase Storage (1GB)', cost: 'Free', icon: <Cloud className="w-5 h-5" /> },
-    { name: 'LLM', tool: 'Groq (free tier)', cost: 'Free', icon: <Code className="w-5 h-5" /> },
-    { name: 'Embeddings', tool: 'Xenova/transformers.js', cost: 'Free', icon: <Code className="w-5 h-5" /> },
-    { name: 'Cron Jobs', tool: 'Vercel Cron', cost: 'Free', icon: <Server className="w-5 h-5" /> }
-  ];
+- **Document AI**: Upload PDFs, ask questions, get AI answers with citations
+- **Regulatory Watch**: Auto-monitor FDA, EMA, CDSCO for changes
+- **AI Training**: Generate quizzes from documents
 
-  const repoStructure = `pharmaintel-ai/
-├── .github/
-│   └── workflows/
-│       └── deploy.yml
+## 💰 100% Free Stack
+
+- **Frontend**: Next.js + Vercel (Free)
+- **Database**: Supabase (500MB free)
+- **Vector Search**: pgvector (Supabase built-in)
+- **Storage**: Supabase Storage (1GB free)
+- **LLM**: Groq (Free tier - fast inference)
+- **Embeddings**: Transformers.js (Browser-based, free)
+
+## 🚀 Quick Start
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/yourusername/pharmaintel-ai.git
+cd pharmaintel-ai
+npm install
+```
+
+### 2. Setup Supabase (Free)
+
+1. Go to [supabase.com](https://supabase.com)
+2. Create new project (free tier)
+3. Go to **Settings** → **API** and copy:
+   - Project URL
+   - Anon public key
+   - Service role key
+4. Go to **SQL Editor** and run migrations:
+   - Run `supabase/migrations/001_initial_schema.sql`
+   - Run `supabase/migrations/002_vector_extension.sql`
+5. Go to **Storage** → Create bucket named `documents` → Make it private
+
+### 3. Setup Groq (Free LLM)
+
+1. Go to [console.groq.com](https://console.groq.com)
+2. Sign up for free account
+3. Create API key
+
+### 4. Environment Variables
+
+Create `.env.local`:
+
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-key
+
+# Groq
+GROQ_API_KEY=your-groq-key
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+CRON_SECRET=your-random-secret
+```
+
+### 5. Run Locally
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+### 6. Deploy to Vercel (Free)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Add environment variables in Vercel dashboard
+# Settings → Environment Variables
+```
+
+Your cron job will run automatically daily at midnight!
+
+## 📁 Project Structure
+
+```
+pharmaintel-ai/
 ├── src/
 │   ├── app/
-│   │   ├── api/
-│   │   │   ├── auth/
-│   │   │   │   ├── login/route.js
-│   │   │   │   └── signup/route.js
-│   │   │   ├── documents/
-│   │   │   │   ├── upload/route.js
-│   │   │   │   ├── ask/route.js
-│   │   │   │   └── summary/route.js
-│   │   │   ├── regulatory/
-│   │   │   │   ├── sources/route.js
-│   │   │   │   ├── scan/route.js
-│   │   │   │   └── alerts/route.js
-│   │   │   ├── training/
-│   │   │   │   ├── generate-quiz/route.js
-│   │   │   │   ├── submit-quiz/route.js
-│   │   │   │   └── progress/route.js
-│   │   │   └── cron/
-│   │   │       └── scraper/route.js
-│   │   ├── dashboard/
-│   │   │   └── page.js
-│   │   ├── documents/
-│   │   │   └── page.js
-│   │   ├── regulatory/
-│   │   │   └── page.js
-│   │   ├── training/
-│   │   │   └── page.js
-│   │   ├── layout.js
-│   │   └── page.js
-│   ├── components/
+│   │   ├── api/              # API routes
+│   │   │   ├── documents/    # Upload, Q&A
+│   │   │   ├── regulatory/   # Alerts, sources
+│   │   │   ├── training/     # Quiz generation
+│   │   │   └── cron/         # Scraper job
+│   │   ├── dashboard/        # Main UI
+│   │   └── page.js           # Landing page
+│   ├── components/           # React components
 │   │   ├── DocumentUpload.js
 │   │   ├── ChatInterface.js
-│   │   ├── RegulatoryFeed.js
-│   │   └── QuizGenerator.js
-│   ├── lib/
-│   │   ├── supabase.js
-│   │   ├── embeddings.js
-│   │   ├── llm.js
-│   │   ├── scraper.js
-│   │   └── utils.js
-│   └── styles/
-│       └── globals.css
+│   │   └── ...
+│   └── lib/                  # Core logic
+│       ├── supabase.js       # DB client
+│       ├── embeddings.js     # Vector search
+│       ├── llm.js            # Groq integration
+│       └── scraper.js        # Regulatory monitoring
 ├── supabase/
-│   ├── migrations/
-│   │   ├── 001_initial_schema.sql
-│   │   ├── 002_vector_extension.sql
-│   │   └── 003_rls_policies.sql
-│   └── seed.sql
-├── scripts/
-│   ├── setup.sh
-│   └── test-scraper.js
-├── .env.example
-├── .gitignore
-├── package.json
-├── next.config.js
-├── tailwind.config.js
-└── README.md`;
+│   └── migrations/           # Database schema
+└── vercel.json               # Cron config
+```
 
-  const steps = [
-    {
-      title: 'Step 1: Setup GitHub & Local Environment',
-      commands: [
-        '# Create GitHub repo',
-        'gh repo create pharmaintel-ai --public --clone',
-        'cd pharmaintel-ai',
-        '',
-        '# Initialize Next.js',
-        'npx create-next-app@latest . --typescript --tailwind --app --no-src-dir',
-        '',
-        '# Install dependencies',
-        'npm install @supabase/supabase-js @xenova/transformers cheerio node-cron groq-sdk'
-      ]
-    },
-    {
-      title: 'Step 2: Setup Supabase (Free)',
-      commands: [
-        '# Go to supabase.com',
-        '# Create new project (free tier)',
-        '# Get API keys from Settings > API',
-        '',
-        '# Add to .env.local:',
-        'NEXT_PUBLIC_SUPABASE_URL=your_url',
-        'NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key',
-        'SUPABASE_SERVICE_ROLE_KEY=your_service_key'
-      ]
-    },
-    {
-      title: 'Step 3: Setup Groq (Free LLM)',
-      commands: [
-        '# Go to console.groq.com',
-        '# Sign up for free tier',
-        '# Create API key',
-        '',
-        '# Add to .env.local:',
-        'GROQ_API_KEY=your_groq_key'
-      ]
-    }
-  ];
+## 🔧 Core Workflows
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">PharmaIntel AI - Free Build Guide</h1>
-          <p className="text-gray-600 mb-6">Build a production-ready pharma AI platform with $0 budget</p>
-          
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-green-800">100% Free Stack</h3>
-                <p className="text-sm text-green-700">Everything below is completely free. No credit card needed for MVP.</p>
-              </div>
-            </div>
-          </div>
+### Document Q&A
 
-          <div className="mb-6">
-            <button
-              onClick={() => toggleSection('stack')}
-              className="flex items-center gap-2 text-lg font-semibold text-gray-800 mb-3"
-            >
-              {openSections.stack ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-              Free Tech Stack
-            </button>
-            
-            {openSections.stack && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ml-7">
-                {freeStack.map((item, idx) => (
-                  <div key={idx} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="text-blue-600">{item.icon}</div>
-                      <h4 className="font-semibold text-gray-800">{item.name}</h4>
-                    </div>
-                    <p className="text-sm text-gray-600">{item.tool}</p>
-                    <span className="inline-block mt-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded">
-                      {item.cost}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+1. User uploads PDF
+2. Extract text, chunk into pieces
+3. Generate embeddings (Transformers.js)
+4. Store in Supabase with pgvector
+5. User asks question
+6. Convert question to embedding
+7. Vector search for similar chunks
+8. Send context to Groq LLM
+9. Return answer with citations
 
-          <div className="mb-6">
-            <button
-              onClick={() => toggleSection('repo')}
-              className="flex items-center gap-2 text-lg font-semibold text-gray-800 mb-3"
-            >
-              {openSections.repo ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-              Repository Structure
-            </button>
-            
-            {openSections.repo && (
-              <div className="ml-7">
-                <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
-                  {repoStructure}
-                </pre>
-              </div>
-            )}
-          </div>
+### Regulatory Watch
 
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Setup Instructions</h2>
-            
-            {steps.map((step, idx) => (
-              <div key={idx} className="mb-4">
-                <button
-                  onClick={() => toggleSection(`step${idx}`)}
-                  className="flex items-center gap-2 text-md font-medium text-gray-700 mb-2"
-                >
-                  {openSections[`step${idx}`] ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                  {step.title}
-                </button>
-                
-                {openSections[`step${idx}`] && (
-                  <div className="ml-6">
-                    <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-                      {step.commands.join('\n')}
-                    </pre>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+1. Cron job runs daily (Vercel Cron)
+2. Fetch FDA/EMA/CDSCO pages
+3. Hash content
+4. Compare with stored hash
+5. If changed → Generate AI summary
+6. Create alert for all users
+7. Store in database
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-800 mb-2">Next: Full Code Files</h3>
-            <p className="text-sm text-blue-700">
-              Click "Generate Complete Code" below and I'll create all the actual code files you need.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+### Training Module
 
-export default BuildGuide;
+1. Select document
+2. Extract chunks
+3. Send to Groq: "Generate 10 MCQs"
+4. Parse JSON response
+5. Show quiz UI
+6. Score and save results
+
+## 🎓 Free Tier Limits
+
+| Service | Free Tier |
+|---------|-----------|
+| Supabase DB | 500MB |
+| Supabase Storage | 1GB |
+| Groq API | 14,400 requests/day |
+| Vercel Hosting | Unlimited |
+| Vercel Cron | 1 job |
+
+## 💡 Usage Tips
+
+1. **Optimize embeddings**: Use 384-dim model (all-MiniLM-L6-v2) - fits free tier
+2. **Chunk wisely**: 500 words per chunk = good balance
+3. **Rate limits**: Add delays in scraper (2s between requests)
+4. **PDF parsing**: Use server-side only (memory intensive)
+
+## 🔒 Security
+
+- Row Level Security (RLS) enabled
+- Users can only access their own documents
+- File encryption in Supabase Storage
+- Private storage buckets
+- Cron job protected by secret
+
+## 📊 Free Tier Capacity
+
+- **Users**: Unlimited
+- **Documents per user (free)**: 5
+- **Document size**: 10MB max
+- **API calls**: ~14k/day (Groq)
+- **Storage**: 1GB total
+
+## 🚀 Upgrade Path
+
+When you outgrow free tier:
+
+1. Supabase Pro ($25/mo) → 8GB DB, 100GB storage
+2. Groq Pay-as-you-go → $0.10/1M tokens
+3. Add OpenAI/Anthropic for better LLM
+
+## 🛠️ Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Test scraper locally
+node scripts/test-scraper.js
+```
+
+## 📝 API Endpoints
+
+### Documents
+- `POST /api/documents/upload` - Upload PDF/TXT
+- `POST /api/documents/ask` - Ask question
+- `GET /api/documents/summary` - Generate summary
+
+### Regulatory
+- `GET /api/regulatory/sources` - List monitored sources
+- `GET /api/regulatory/alerts` - Get user alerts
+- `POST /api/regulatory/scan` - Manual scan
+
+### Training
+- `POST /api/training/generate-quiz` - Generate quiz
+- `POST /api/training/submit-quiz` - Submit answers
+- `GET /api/training/progress` - Get user progress
+
+## 🐛 Common Issues
+
+### "Can't connect to Supabase"
+- Check `.env.local` has correct keys
+- Verify Supabase project is active
+- Run migrations in SQL editor
+
+### "Upload fails"
+- Check storage bucket exists and is private
+- Verify RLS policies applied
+- Check file size < 10MB
+
+### "Vector search not working"
+- Enable pgvector extension
+- Run migration 002_vector_extension.sql
+- Rebuild embeddings index
+
+### "Cron job not running"
+- Verify `vercel.json` deployed
+- Check Vercel dashboard → Settings → Cron
+- Set CRON_SECRET environment variable
+
+## 📚 Resources
+
+- [Supabase Docs](https://supabase.com/docs)
+- [Groq API Docs](https://console.groq.com/docs)
+- [Next.js Docs](https://nextjs.org/docs)
+- [Transformers.js](https://huggingface.co/docs/transformers.js)
+
+## ⚖️ Legal
+
+This tool provides information only. Not regulatory or medical advice.
+Users responsible for verifying all information.
+
+## 📄 License
+
+MIT
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Open Pull Request
+
+## 💬 Support
+
+- GitHub Issues: Report bugs
+- Email: your-email@example.com
+
+---
+
+Built with ❤️ for the pharmaceutical community
