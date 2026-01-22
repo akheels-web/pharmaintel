@@ -270,7 +270,7 @@ MIT
 ## 💬 Support
 
 - GitHub Issues: Report bugs
-- Email: your-email@example.com
+- Email: admin@digitalvint.com
 
 ---
 
